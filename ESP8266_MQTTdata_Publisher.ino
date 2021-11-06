@@ -15,7 +15,6 @@ v/*
  
 //defining Pins
 #define DHTPIN 5
-const int pinLED = 2;
  
 //DHT parameters
 #define DHTTYPE DHT11     // DHT 11
@@ -57,48 +56,7 @@ void setup_wifi() {
   Serial.println("IP address: ");
   Serial.println(WiFi.localIP());
  
-}
- 
-void reconnect() {
-  while (!client.connected()) {
-    if (client.connect(clientID)) {
-      Serial.println("MQTT connected");
-      client.subscribe("Led/status");
-      Serial.println("Topic Subscribed");
-    }
-    else {
-      Serial.print("failed, rc=");
-      Serial.print(client.state());
-      Serial.println(" try again in 5 seconds");
-      delay(5000);  // wait 5sec and retry
-    }
- 
-  }
- 
-}
- 
-//subscribe call back
-void callback(char*topic, byte* payload, unsigned int length) {
-  Serial.print("Message arrived in topic: ");
-  Serial.println(topic);
-  Serial.print("Message:");
-  String data = "";
-  for (int i = 0; i < length; i++) {
-    Serial.print((char)payload[i]);
-    data += (char)payload[i];
-  }
- 
- 
- 
-  if (data == "1") {
-    Serial.println("LED");
-    digitalWrite(pinLED, LOW);
-  }
-  else {
-    digitalWrite(pinLED, HIGH);
-  }
-}
- 
+} 
  
 void setup() {
   Serial.begin(57600);
@@ -108,23 +66,15 @@ void setup() {
   sensor_t sensor;
   dht.temperature().getSensor(&sensor);
   dht.humidity().getSensor(&sensor);
- 
-  pinMode(pinLED, OUTPUT);
-  digitalWrite(pinLED, LOW);
- 
+  
   setup_wifi();
  
-  client.setServer(mqttServer, 1883); //setting MQTT server
-  client.setCallback(callback); //defining function which will be called when message is recieved.
-  randomSeed(analogRead(0));
- 
+  client.setServer(mqttServer, 1883); //setting MQTT server 
  
 }
  
 void loop() {
-  if (!client.connected()) { //if client is not connected
-    reconnect(); //try to reconnect
-  }
+
   client.loop();
  
   unsigned long currentMillis = millis(); //read current time
