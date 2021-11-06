@@ -11,9 +11,7 @@ import paho.mqtt.client as mqtt
 import matplotlib.pyplot as plt
 import json
 
-# Creiamo le funzione di callback per il subscriber per la connessione al broker.
-
-# se il codice connessione (presente nella variabile "rc" è "0" allora la connessione è riuscita)
+# Creiamo le funzione di callback per il subscriber e per ricevere i mesaggi.
 def on_connect(client, userdata, flags, rc):
     print("Connessione con il broker con codice: "+str(rc))
 
@@ -22,10 +20,8 @@ def on_connect(client, userdata, flags, rc):
     """
     client.subscribe("ESP8266/dataSensor")
 
-# Creiamo la funzione callback necessaria per ricevere i messaggi
 def on_message(client, userdata, msg):
 
-    # la variabile "msg" contiene il topic e il payload, cioè il contenuto del messaggio ricevuto dal publisher.
     print("ho ricevuto un messaggio con il seguente topic: "+msg.topic+" e il seguente contenuto: "+str(msg.payload, "utf-8"))
     
     if msg.payload != None:
@@ -48,7 +44,6 @@ def on_message(client, userdata, msg):
         plt.show()
 
 
-# creiamo la variabile client
 client = mqtt.Client()
 
 x = list()
